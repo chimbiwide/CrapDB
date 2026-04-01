@@ -16,6 +16,8 @@ typedef struct {
     void *pages[TABLE_MAX_PAGES];  //starts as NULL
 } Table;
 
-void table_open()
+Table* table_open();
+void table_close(Table* table);
+void* row_slot(Table* table, uint32_t row_num);
 
 #endif
