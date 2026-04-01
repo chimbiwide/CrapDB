@@ -2,6 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "../include/row.h"
+#include "../include/table.h"
+
 //meta commands
 typedef enum {
     META_SUCCESS,
@@ -30,9 +33,10 @@ typedef struct {
 //
 MetaResult handle_meta(const char *input);
 ParseResult parse_SQL(const char *input, Command *cmd);
-void execute_command(Command *cmd);
+void execute_command(Command *cmd, Table *table, const char *input);
 
 int main() {
+    Table* table = table_open();
     while (1) {
         char buffer[1024];
         Command cmd;
@@ -59,8 +63,9 @@ int main() {
             printf("Unrecognized SQL Command: '%s', Try Again\n", buffer);
             continue;
         }
-        execute_command(&cmd);
+        execute_command(&cmd, table, buffer);
     }
+    table_close(table);
     return 0;
 }
 
@@ -94,13 +99,25 @@ ParseResult parse_SQL(const char *input, Command *cmd) {
     return SQL_UNRECOGNIZED;
 }
 
-void execute_command(Command *cmd) {
+void execute_command(Command *cmd, Table *table, const char *input) {
     switch(cmd->type){
         case CMD_INSERT:
-            printf("INSERT not yet implmented. \n");
+            uint32_t id;
+            char *username;
+            char *email;
+            if (sscanf(input, "INSERT %d %33s %256s INTO table;", &id, username, email) == 3){
+                Row row = {id, *username, *email};
+                serialize_row(&row, row_slot(table, table->num_rows));
+                table->num_rows++;
+            }
+            printf("INSERTED");
             break;
         case CMD_SELECT:
-            printf("SELECT not yet implemented. \n");
+            for (int i = 0; i < table->num_rows; i++) {
+                Row *output;
+                deserialize_row(row_slot(table, i), output);
+                print_row(output);
+            }
             break;
         case CMD_DELETE:
             printf("DELETE not yet implenmented. \n");

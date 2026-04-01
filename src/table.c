@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "table.h"
+#include "../include/table.h"
 
 Table* table_open() {
     Table *table = malloc(sizeof(Table));
@@ -38,4 +38,6 @@ void* row_slot(Table* table, uint32_t row_num) {
         table->pages[page_num] = page;
     }
     page = table->pages[page_num];
+    uint32_t overflow = row_num % ROWS_PER_PAGE;
+    return page + (overflow * ROW_SIZE);
 }

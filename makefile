@@ -1,11 +1,11 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c11
+CFLAGS = -Wall -Wextra -std=c11 -I./include
 TARGET = crapdb
-SRC = main.c row.c
+SRC = $(wildcard src/*.c)
 
 all: $(TARGET)
 
-$(TARGET): main.c
+$(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
 
 clean:

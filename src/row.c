@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include "row.h"
+#include "../include/row.h"
 
 void serialize_row(const Row *src, void *dest) {
     memcpy(dest + ID_OFFSET, &src->id, sizeof(uint32_t));
