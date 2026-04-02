@@ -5,6 +5,7 @@
 #include "../include/table.h"
 #include "../include/parser.h"
 #include "../include/executor.h"
+#include "../include/color.h"
 
 int main() {
     Table* table = table_open();
@@ -25,13 +26,13 @@ int main() {
 
         if (buffer[0] == '.') {
             if (handle_meta(buffer) == META_UNRECOGNIZED) {
-                printf("Unrecognized Meta Command: '%s', Try Again\n", buffer);
+                printf("%sUnrecognized Meta Command: '%s', Try Again%s\n", RED, buffer, RESET);
             }
             continue;
         }
         
         if (parse_SQL(buffer, &cmd) == SQL_UNRECOGNIZED) {
-            printf("Unrecognized SQL Command: '%s', Try Again\n", buffer);
+            printf("%sUnrecognized SQL Command: '%s', Try Again%s\n", RED, buffer, RESET);
             continue;
         }
         execute_command(&cmd, table, buffer);

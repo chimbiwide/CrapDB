@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include "../include/parser.h"
+#include "../include/color.h"
 
 void execute_command(Command *cmd, Table *table, const char *input) {
     switch(cmd->type){
@@ -10,7 +11,7 @@ void execute_command(Command *cmd, Table *table, const char *input) {
             uint32_t id;
             char username[COLUMN_USRNAME_SIZE + 1];
             char email[COLUMN_EMAIL_SIZE + 1];
-            if (sscanf(input, "INSERT %d %33s %256s;", &id, username, email) == 3){
+            if (sscanf(input, "INSERT %d %33s %255s;", &id, username, email) == 3){
                 Row row;
                 row.id = id;
                 row.deleted = 0;
@@ -24,20 +25,20 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                         break;
                     }
                 }
-                if (duplicate) printf("Duplicate Values\n");
+                if (duplicate) printf("%sDuplicate Values%s\n", RED, RESET);
                 else {
                     strncpy(row.username, username, COLUMN_USRNAME_SIZE+1);
                     strncpy(row.email, email, COLUMN_EMAIL_SIZE+1);
                     serialize_row(&row, row_slot(table, table->num_rows));
                     table->num_rows++;
-                    printf("INSERTED\n");
+                    printf("%sINSERTED%s\n", GRN, RESET);
                 }
             }
-            else printf("Usage: INSERT <id: uint_32> <username: String> <email: String>\n");
+            else printf("%sUsage: INSERT <id: uint_32> <username: String> <email: String>%s\n", RED, RESET);
             break;
         }
         case CMD_SELECT: {
-            uint8_t valid;
+            uint8_t valid = 0;
             uint32_t id;
             if (sscanf(input, "SELECT WHERE ID = %d", &id) == 1) {
                 valid = 1;
@@ -58,7 +59,7 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                 }
             }
             if (valid) break;
-            else printf("Usage: SELECT OR SELECT WHERE ID = <id: uint_32>\n");
+            else printf("%sUsage: SELECT OR SELECT WHERE ID = <id: uint_32>%s\n", RED, RESET);
             break;
         }
         case CMD_DELETE: {
@@ -75,8 +76,8 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                     }
                 }
             }
-            if (found) printf("Deleted\n");
-            else printf("Usage: DELETE WHERE ID = <id: uint_32>\n");
+            if (found) printf("%sDeleted%s\n", GRN, RESET);
+            else printf("%sRow with ID: '%d' not found%s\n", RED,id, RESET);
             break;
         }
         default:

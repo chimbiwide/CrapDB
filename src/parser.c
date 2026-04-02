@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "../include/parser.h"
+#include "../include/color.h"
 
 MetaResult handle_meta(const char *input) {
     if (strcmp(input, ".exit") == 0) {
@@ -10,12 +11,12 @@ MetaResult handle_meta(const char *input) {
         exit(EXIT_SUCCESS);
     }
     else if (strcmp(input, ".help") == 0) {
-        printf("--------HELP--------\n");
+        printf("%s--------HELP--------\n", GRN);
         printf("Meta Commands: .exit .help\n");
         printf("SQL Keywords: , SELECT, DELETE\n");
         printf("INSERT <id UNIQUE> <username: string> <email: string>\n");
         printf("SELECT\n");
-        printf("DELETE WHERE ID = <int>\n");
+        printf("DELETE WHERE ID = <int>%s\n", RESET);
         return META_SUCCESS;
     }
     return META_UNRECOGNIZED;
