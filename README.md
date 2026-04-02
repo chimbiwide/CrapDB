@@ -14,6 +14,8 @@ Small SQL-Like Database in C
 
 1 table, 4Kb per page, 100 pages
 
+---
+
 ### SQL Commands
 
 CrapDB currently support 3 SQL-Like commands
@@ -26,6 +28,8 @@ With 2 Meta commands:
 
 - `.help`
 - `.exit`
+
+---
 
 ### Platform
 
