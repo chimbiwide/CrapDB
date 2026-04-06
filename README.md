@@ -33,4 +33,4 @@ With 2 Meta commands:
 
 ### Platform
 
-Developed and tested on Linux with gcc, not sure if it works on windows
+This database is designed to run on Linux systems only, as auto completion depends on `readline-dev` which is a GNU library. Future ports to Unix systems might be possible.
