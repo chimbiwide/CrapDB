@@ -10,8 +10,8 @@ void execute_command(Command *cmd, Table *table, const char *input) {
         case CMD_INSERT: {
             uint32_t id;
             char username[COLUMN_USRNAME_SIZE + 1];
-            char email[COLUMN_EMAIL_SIZE + 1];
-            if (sscanf(input, "INSERT %d %33s %255s;", &id, username, email) == 3){
+            char bio[COLUMN_BIO_SIZE + 1];
+            if (sscanf(input, "INSERT %d %33s %255s;", &id, username, bio) == 3){
                 Row row;
                 row.id = id;
                 row.deleted = 0;
@@ -28,13 +28,13 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                 if (duplicate) printf("%sDuplicate Values%s\n", RED, RESET);
                 else {
                     strncpy(row.username, username, COLUMN_USRNAME_SIZE+1);
-                    strncpy(row.email, email, COLUMN_EMAIL_SIZE+1);
+                    strncpy(row.bio, bio, COLUMN_BIO_SIZE+1);
                     serialize_row(&row, row_slot(table, table->num_rows));
                     table->num_rows++;
                     printf("%sINSERTED%s\n", GRN, RESET);
                 }
             }
-            else printf("%sUsage: INSERT <id: uint_32> <username: String> <email: String>%s\n", RED, RESET);
+            else printf("%sUsage: INSERT <id: uint_32> <username: String> <bio: String>%s\n", RED, RESET);
             break;
         }
         case CMD_SELECT: {
@@ -75,8 +75,9 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                         serialize_row(&current, row_slot(table, i));
                     }
                 }
+                if (found) printf("%sDeleted%s\n", GRN, RESET);
+                else printf("Row not found\n");
             }
-            if (found) printf("%sDeleted%s\n", GRN, RESET);
             else printf("%sRow with ID: '%d' not found%s\n", RED,id, RESET);
             break;
         }

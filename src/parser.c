@@ -1,20 +1,18 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
 #include "../include/parser.h"
 #include "../include/color.h"
 
 MetaResult handle_meta(const char *input) {
     if (strcmp(input, ".exit") == 0) {
-        printf("~BYE~\n");
-        exit(EXIT_SUCCESS);
+        return META_EXIT;
     }
     else if (strcmp(input, ".help") == 0) {
         printf("%s--------HELP--------\n", GRN);
         printf("Meta Commands: .exit .help\n");
         printf("SQL Keywords: , SELECT, DELETE\n");
-        printf("INSERT <id UNIQUE> <username: string> <email: string>\n");
+        printf("INSERT <id UNIQUE> <username: string> <bio: string>\n");
         printf("SELECT\n");
         printf("DELETE WHERE ID = <int>%s\n", RESET);
         return META_SUCCESS;

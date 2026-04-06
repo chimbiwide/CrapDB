@@ -7,7 +7,8 @@
 //meta commands
 typedef enum {
     META_SUCCESS,
-    META_UNRECOGNIZED
+    META_UNRECOGNIZED,
+    META_EXIT
 } MetaResult;
 
 //SQL-Like statements

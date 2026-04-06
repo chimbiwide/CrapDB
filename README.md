@@ -8,7 +8,7 @@ Small SQL-Like Database in C
 
 *Columns*:
 
-| ID: uint32 | USERNAME: 32 byte char | EMAIL: 255 bye char |
+| ID: uint32 | USERNAME: 32 byte char | BIO: 255 byte char |
 
 *Table*:
 
