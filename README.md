@@ -23,6 +23,7 @@ CrapDB currently support 3 SQL-Like commands
 - `SELECT` 
 - `INSERT`
 - `DELETE`
+- `UPDATE`
 
 With 2 Meta commands:
 
@@ -31,6 +32,8 @@ With 2 Meta commands:
 
 ---
 
-### Platform
+### Compiling
 
-This database is designed to run on Linux systems only, as auto completion depends on `readline-dev` which is a GNU library. Future ports to Unix systems might be possible.
+Requirements: **gcc** **make**
+
+Developed on Linux but should work on any POSIX systems.
