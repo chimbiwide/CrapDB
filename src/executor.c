@@ -65,7 +65,7 @@ void execute_command(Command *cmd, Table *table, const char *input) {
         case CMD_DELETE: {
             uint8_t found = 0;
             uint32_t id;
-            if (sscanf(input, "DELETE WHERE ID = %d;", &id) == 1) {
+            if (sscanf(input, "DELETE WHERE ID = %d", &id) == 1) {
                 for (uint32_t i = 0; i < table->num_rows; i++) {
                     Row current;
                     deserialize_row(row_slot(table, i), &current);
@@ -81,7 +81,30 @@ void execute_command(Command *cmd, Table *table, const char *input) {
             else printf("%sRow with ID: '%d' not found%s\n", RED,id, RESET);
             break;
         }
+        case CMD_UPDATE: {
+            uint32_t target_id;
+            char new_usrname[COLUMN_USRNAME_SIZE + 1];
+            char new_bio[COLUMN_BIO_SIZE + 1];
+            if (sscanf(input, "UPDATE WHERE ID = %u SET username = %33s bio = %255s", &target_id, new_usrname, new_bio) == 3) {
+                uint8_t found = 0;
+                for (uint32_t i = 0; i < table->num_rows; i++) {
+                    Row current;
+                    deserialize_row(row_slot(table, i), &current);
+                    if (current.id == target_id && !current.deleted) {
+                        strncpy(current.username, new_usrname, COLUMN_USRNAME_SIZE+1);
+                        strncpy(current.bio, new_bio, COLUMN_BIO_SIZE+1);
+                        serialize_row(&current, row_slot(table, i));
+                        printf("%sUPDATED%s\n", GRN, RESET);
+                        found = 1;
+                        break;
+                    }
+                }
+                if (!found) printf("%sRow with ID = %u not found%s\n", RED, target_id, RESET);
+            }
+            else printf("%sUsage: UPDATE WHERE ID = <uint32> SET username = <string> bio = <string>%s\n", RED, RESET);
+            break;
+        }
         default:
             break;
-    }
+    } 
 }

@@ -14,7 +14,8 @@ MetaResult handle_meta(const char *input) {
         printf("SQL Keywords: , SELECT, DELETE\n");
         printf("INSERT <id UNIQUE> <username: string> <bio: string>\n");
         printf("SELECT\n");
-        printf("DELETE WHERE ID = <int>%s\n", RESET);
+        printf("DELETE WHERE ID = <int>\n");
+        printf("UPDATE WHERE ID = <int> SET username = <string> bio = <string>%s\n", RESET);
         return META_SUCCESS;
     }
     return META_UNRECOGNIZED;
@@ -32,6 +33,10 @@ ParseResult parse_SQL(const char *input, Command *cmd) {
     }
     else if (strncmp(input, "DELETE", 6) == 0) {
         cmd->type = CMD_DELETE;
+        return SQL_SUCCESS;
+    }
+    else if (strncmp(input, "UPDATE", 6) == 0) {
+        cmd->type = CMD_UPDATE;
         return SQL_SUCCESS;
     }
     return SQL_UNRECOGNIZED;

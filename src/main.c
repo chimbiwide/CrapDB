@@ -27,10 +27,16 @@ int main(int argc, char *argv[]) {
     Table* table = table_open(argv[1]);
     while (1) {
         Command cmd;
+        char buffer[1024];
 
-        char *buffer = readline("crapdb> ");
-        if (buffer == NULL) break;
-        add_history(buffer);
+        printf("crapdb> ");
+        fflush(stdout);
+
+        if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
+            //EOF Exit
+            printf("%s~~~BYE~~~%s\n", YEL, RESET);
+            break;
+        }
 
         buffer[strcspn(buffer, "\n")] = '\0';
         if (buffer[0] == '\0') {continue;}
@@ -42,20 +48,16 @@ int main(int argc, char *argv[]) {
             }
             else if (result == META_EXIT) {
                 printf("---------BYE---------\n");
-                free(buffer);
                 break;
             }
-            free(buffer);
             continue;
         }
         
         if (parse_SQL(buffer, &cmd) == SQL_UNRECOGNIZED) {
             printf("%sUnrecognized SQL Command: '%s', Try Again%s\n", RED, buffer, RESET);
-            free(buffer);
             continue;
         }
         execute_command(&cmd, table, buffer);
-        free(buffer);
     }
     table_close(table);
     return 0;

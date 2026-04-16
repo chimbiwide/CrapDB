@@ -16,6 +16,7 @@ typedef enum {
     CMD_INSERT,
     CMD_SELECT,
     CMD_DELETE,
+    CMD_UPDATE,
     CMD_UNKNOWN
 } CommandType;
 
