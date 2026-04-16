@@ -13,7 +13,7 @@
 int main(int argc, char *argv[]) {
     //ignore Ctrl+C
     signal(SIGINT, SIG_IGN);
-    //if didnt provide a .db file, exit
+    //if didnt provide a .crap file, exit
     if (argc != 2) {
         printf("%sUsage: ./crapdb <yourDbName.crap>%s\n", RED, RESET);
         exit(2);
