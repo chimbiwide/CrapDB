@@ -104,6 +104,22 @@ void execute_command(Command *cmd, Table *table, const char *input) {
             else printf("%sUsage: UPDATE WHERE ID = <uint32> SET username = <string> bio = <string>%s\n", RED, RESET);
             break;
         }
+        case CMD_COUNT: {
+            uint32_t count = 0;
+            if (strcmp(input, "COUNT") == 0) {
+                for (uint32_t i = 0; i < table->num_rows; i++) {
+                    Row current;
+                    deserialize_row(row_slot(table, i), &current);
+                    if (!current.deleted) {
+                        count++;
+                    }
+                }
+                printf("%sTotal Rows: %u %s\n", GRN, count, RESET);
+                break;
+            }
+            else printf("%sUsage: COUNT%s\n", RED, RESET);
+            break;
+        }
         default:
             break;
     } 

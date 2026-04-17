@@ -39,6 +39,10 @@ ParseResult parse_SQL(const char *input, Command *cmd) {
         cmd->type = CMD_UPDATE;
         return SQL_SUCCESS;
     }
+    else if (strncmp(input, "COUNT", 5) == 0) {
+        cmd->type = CMD_COUNT;
+        return SQL_SUCCESS;
+    }
     return SQL_UNRECOGNIZED;
 }
 

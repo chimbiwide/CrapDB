@@ -17,6 +17,7 @@ typedef enum {
     CMD_SELECT,
     CMD_DELETE,
     CMD_UPDATE,
+    CMD_COUNT,
     CMD_UNKNOWN
 } CommandType;
 
