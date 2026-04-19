@@ -24,6 +24,7 @@ CrapDB currently support 3 SQL-Like commands
 - `INSERT`
 - `DELETE`
 - `UPDATE`
+- `COUNT`
 
 With 2 Meta commands:
 
@@ -34,6 +35,6 @@ With 2 Meta commands:
 
 ### Compiling
 
-Requirements: **gcc** **make**
+Requirements: **gcc**/**clang** **make**
 
-Developed on Linux but should work on any POSIX systems.
+Tested to work on Linux and MacOS.
