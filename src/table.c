@@ -26,8 +26,11 @@ Table* table_open(char *filename) {
 }
 
 void table_close(Table *table) {
+    //reset the file pointer
     fseek(table->file, 0, SEEK_SET);
+    //writes the num_rows first
     fwrite(&table->num_rows, sizeof(uint32_t), 1, table->file);
+    //write page -> free that page
     for (int i = 0; i < TABLE_MAX_PAGES; i++) {
         if (table->pages[i] != NULL) {
             fseek(table->file, ROWS_OFFSET + (i * PAGE_SIZE), SEEK_SET);

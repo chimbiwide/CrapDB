@@ -38,9 +38,12 @@ int main(int argc, char *argv[]) {
             break;
         }
 
+        //replaces \n with \0
         buffer[strcspn(buffer, "\n")] = '\0';
+        //if line is empty continue
         if (buffer[0] == '\0') {continue;}
 
+        //if the input is a meta command
         if (buffer[0] == '.') {
             MetaResult result = handle_meta(buffer);
             if (result == META_UNRECOGNIZED) {

@@ -4,7 +4,7 @@
 #define PARSER_H
 #include "table.h"
 
-//meta commands
+//meta command status
 typedef enum {
     META_SUCCESS,
     META_UNRECOGNIZED,
@@ -21,6 +21,7 @@ typedef enum {
     CMD_UNKNOWN
 } CommandType;
 
+//SQL-Like statement status
 typedef enum {
     SQL_SUCCESS,
     SQL_UNRECOGNIZED

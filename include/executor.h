@@ -5,6 +5,7 @@
 #include "table.h"
 #include "parser.h"
 
+//execute a command that is passed in
 void execute_command(Command *cmd, Table *table, const char *input);
 
 #endif
