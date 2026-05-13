@@ -11,11 +11,12 @@ MetaResult handle_meta(const char *input) {
     else if (strcmp(input, ".help") == 0) {
         printf("%s--------HELP--------\n", GRN);
         printf("Meta Commands: .exit .help\n");
-        printf("SQL Keywords: , SELECT, DELETE\n");
+        printf("SQL Keywords: INSERT, SELECT, DELETE, UPDATE, COUNT\n");
         printf("INSERT <id UNIQUE> <username: string> <bio: string>\n");
         printf("SELECT\n");
         printf("DELETE WHERE ID = <int>\n");
-        printf("UPDATE WHERE ID = <int> SET username = <string> bio = <string>%s\n", RESET);
+        printf("UPDATE WHERE ID = <int> SET username = <string> bio = <string>\n");
+        printf("COUNT%s\n", RESET);
         return META_SUCCESS;
     }
     return META_UNRECOGNIZED;
