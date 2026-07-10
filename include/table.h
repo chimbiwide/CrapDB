@@ -13,6 +13,7 @@
 #define ROWS_PER_PAGE (PAGE_SIZE / ROW_SIZE)
 #define TABLE_MAX_ROWS (TABLE_MAX_PAGES * ROWS_PER_PAGE)
 
+//the stuct for the table
 typedef struct {
     FILE *file;
     char *filename;
@@ -20,8 +21,12 @@ typedef struct {
     void *pages[TABLE_MAX_PAGES];  //starts as NULL
 } Table;
 
+//allocate memory for a table
+//either reads data from the .crap file or creates a new file
 Table* table_open(char *filename);
+//writes all information to the file before freeing
 int table_close(Table* table);
+//return a pointer to where a row shoudl be 
 void* row_slot(Table* table, uint32_t row_num);
 
 #endif

@@ -7,6 +7,7 @@
 #include "../include/color.h"
 
 void execute_command(Command *cmd, Table *table, const char *input) {
+    
     switch(cmd->type){
         case CMD_INSERT: {
             uint32_t id;

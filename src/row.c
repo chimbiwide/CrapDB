@@ -5,6 +5,7 @@
 #include "../include/row.h"
 #include "../include/color.h"
 
+//memcpy is used because of the padding bytes that C might add to structs
 void serialize_row(const Row *src, void *dest) {
     memcpy(dest + DELETED_OFFSET, &src->deleted, sizeof(uint8_t));
     memcpy(dest + ID_OFFSET, &src->id, sizeof(uint32_t));

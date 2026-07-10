@@ -34,10 +34,12 @@ close_file: ;
 
 int table_close(Table *table) {
     int status = 0; // 0 = success, -1 = write failed
+    //reset the file pointer
     fseek(table->file, 0, SEEK_SET);
+    //writes the num_rows first
     if (fwrite(&table->num_rows, sizeof(uint32_t), 1, table->file) != 1) 
         status = -1;
-
+    //write page -> free that page
     for (int i = 0; i < TABLE_MAX_PAGES; i++) {
         if (table->pages[i] != NULL) {
             fseek(table->file, ROWS_OFFSET + (i * PAGE_SIZE), SEEK_SET);

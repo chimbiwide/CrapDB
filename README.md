@@ -18,22 +18,23 @@ Small SQL-Like Database in C
 
 ### SQL Commands
 
-CrapDB currently support 3 SQL-Like commands
+CrapDB currently support 5 SQL-Like commands
 
 - `SELECT` 
 - `INSERT`
 - `DELETE`
 - `UPDATE`
+- `COUNT`
 
 With 2 Meta commands:
 
-- `.help`
-- `.exit`
+- `.help`: displays a help message
+- `.exit`: exit the REPL and save it to disk.
 
 ---
 
 ### Compiling
 
-Requirements: **gcc** **make**
+Requirements: **gcc**/**clang** **make**
 
-Developed on Linux but should work on any POSIX systems.
+Tested to compile on Ubuntu and MacOS.
