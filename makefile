@@ -8,7 +8,6 @@ ifeq ($(UNAME_S), Darwin)
 	CC = clang
 endif
 
-CC = clang
 CFLAGS = -Wall -Wextra -std=c11 -I./include
 LIBS = -lreadline
 TARGET = crapdb

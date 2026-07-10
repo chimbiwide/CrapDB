@@ -6,6 +6,7 @@
 
 MetaResult handle_meta(const char *input) {
     if (strcmp(input, ".exit") == 0) {
+        printf("---------BYE---------\n");
         return META_EXIT;
     }
     else if (strcmp(input, ".help") == 0) {
@@ -18,6 +19,7 @@ MetaResult handle_meta(const char *input) {
         printf("UPDATE WHERE ID = <int> SET username = <string> bio = <string>%s\n", RESET);
         return META_SUCCESS;
     }
+    printf("%sUnrecognized Meta Command: '%s', Try Again%s\n", RED, input, RESET);
     return META_UNRECOGNIZED;
 }
 
@@ -43,6 +45,7 @@ ParseResult parse_SQL(const char *input, Command *cmd) {
         cmd->type = CMD_COUNT;
         return SQL_SUCCESS;
     }
+    printf("%sUnrecognized SQL Command: '%s', Try Again%s\n", RED, input, RESET);
     return SQL_UNRECOGNIZED;
 }
 

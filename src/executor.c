@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <errno.h>
 #include <stdint.h>
 
 #include "../include/parser.h"
@@ -11,7 +12,7 @@ void execute_command(Command *cmd, Table *table, const char *input) {
             uint32_t id;
             char username[COLUMN_USRNAME_SIZE + 1];
             char bio[COLUMN_BIO_SIZE + 1];
-            if (sscanf(input, "INSERT %d %33s %255s;", &id, username, bio) == 3){
+            if (sscanf(input, "INSERT %d %32s %255s;", &id, username, bio) == 3){
                 Row row;
                 row.id = id;
                 row.deleted = 0;
@@ -68,24 +69,30 @@ void execute_command(Command *cmd, Table *table, const char *input) {
             if (sscanf(input, "DELETE WHERE ID = %d", &id) == 1) {
                 for (uint32_t i = 0; i < table->num_rows; i++) {
                     Row current;
-                    deserialize_row(row_slot(table, i), &current);
+                    Row *target = row_slot(table, i);
+                    if (target == NULL) {
+                        fprintf(stderr, "%sError: unable to delete row %d: '%s'%s\n",
+                                RED, id, strerror(errno), RESET);
+                        break;
+                    }
+                    deserialize_row(target, &current);
                     if (id == current.id) {
                         current.deleted = 1;
                         found = 1;
-                        serialize_row(&current, row_slot(table, i));
+                        serialize_row(&current, target);
                     }
                 }
                 if (found) printf("%sDeleted%s\n", GRN, RESET);
                 else printf("Row not found\n");
             }
-            else printf("%sRow with ID: '%d' not found%s\n", RED,id, RESET);
+            else printf("%sRow with ID: '%d' not found%s\n", RED, id, RESET);
             break;
         }
         case CMD_UPDATE: {
             uint32_t target_id;
             char new_usrname[COLUMN_USRNAME_SIZE + 1];
             char new_bio[COLUMN_BIO_SIZE + 1];
-            if (sscanf(input, "UPDATE WHERE ID = %u SET username = %33s bio = %255s", &target_id, new_usrname, new_bio) == 3) {
+            if (sscanf(input, "UPDATE WHERE ID = %u SET username = %32s bio = %255s", &target_id, new_usrname, new_bio) == 3) {
                 uint8_t found = 0;
                 for (uint32_t i = 0; i < table->num_rows; i++) {
                     Row current;

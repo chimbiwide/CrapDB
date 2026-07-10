@@ -21,7 +21,7 @@ typedef struct {
 } Table;
 
 Table* table_open(char *filename);
-void table_close(Table* table);
+int table_close(Table* table);
 void* row_slot(Table* table, uint32_t row_num);
 
 #endif

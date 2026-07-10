@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <signal.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 #include "../include/table.h"
 #include "../include/parser.h"
@@ -25,6 +24,11 @@ int main(int argc, char *argv[]) {
     }
 
     Table* table = table_open(argv[1]);
+    if (table == NULL) {
+        fprintf(stderr, "%sError: could not open database '%s': %s%s\n",
+                RED, argv[1], strerror(errno), RESET);
+        exit(EXIT_FAILURE);
+    }
     while (1) {
         Command cmd;
         char buffer[1024];
@@ -34,31 +38,32 @@ int main(int argc, char *argv[]) {
 
         if (fgets(buffer, sizeof(buffer), stdin) == NULL) {
             //EOF Exit
-            printf("%s~~~BYE~~~%s\n", YEL, RESET);
+            printf("%s---BYE---%s\n", YEL, RESET);
             break;
         }
 
+        // convert to string
         buffer[strcspn(buffer, "\n")] = '\0';
-        if (buffer[0] == '\0') {continue;}
+        //if no input
+        if (buffer[0] == '\0') continue;
 
         if (buffer[0] == '.') {
             MetaResult result = handle_meta(buffer);
-            if (result == META_UNRECOGNIZED) {
-                printf("%sUnrecognized Meta Command: '%s', Try Again%s\n", RED, buffer, RESET);
-            }
-            else if (result == META_EXIT) {
-                printf("---------BYE---------\n");
-                break;
-            }
-            continue;
+
+            if (result == META_UNRECOGNIZED) continue;
+            else if (result == META_SUCCESS) continue;
+            else if (result == META_EXIT) break;
         }
-        
         if (parse_SQL(buffer, &cmd) == SQL_UNRECOGNIZED) {
-            printf("%sUnrecognized SQL Command: '%s', Try Again%s\n", RED, buffer, RESET);
             continue;
         }
         execute_command(&cmd, table, buffer);
     }
-    table_close(table);
+    if (table_close(table) != 0) {
+        fprintf(stderr, "%sError: cannot write '%s' to file%s\n",
+                RED, argv[1], RESET);
+        return EXIT_FAILURE;
+    }
+    table = NULL;
     return 0;
 }
