@@ -8,13 +8,14 @@
 #include "../include/parser.h"
 #include "../include/executor.h"
 #include "../include/color.h"
+#include "../include/error.h"
 
 int main(int argc, char *argv[]) {
     //ignore Ctrl+C
     signal(SIGINT, SIG_IGN);
     //if didnt provide a .crap file, exit
     if (argc != 2) {
-        printf("%sUsage: ./crapdb <yourDbName.crap>%s\n", RED, RESET);
+        print_inc_usage(SRC_DB);
         exit(2);
     }
     size_t len = strlen(argv[1]);

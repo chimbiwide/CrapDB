@@ -21,6 +21,14 @@ typedef struct {
     void *pages[TABLE_MAX_PAGES];  //starts as NULL
 } Table;
 
+// enum for errors
+typedef enum {
+    DB_OK,
+    DB_ERR_IO,
+    DB_ERR_NOMEM,
+    DB_ERR_CORRUPT
+} DBStatus;
+
 //allocate memory for a table
 //either reads data from the .crap file or creates a new file
 Table* table_open(char *filename);

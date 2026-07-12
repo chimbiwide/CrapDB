@@ -14,9 +14,13 @@ Table* table_open(char *filename) {
     Table *table = malloc(sizeof(Table));
     if (table == NULL) goto close_file;
 
-    if (fread(&table->num_rows, sizeof(uint32_t), 1, file) != 1){
-        table->num_rows = 0;
+    if (fread(&table->num_rows, sizeof(uint32_t), 1, file) != 1) table->num_rows = 0;
+
+    if (table->num_rows > TABLE_MAX_ROWS) {
+        errno = EFBIG;
+        goto close_file;
     }
+
     table->filename = filename;
     table->file = file;
     for (int i = 0; i < TABLE_MAX_PAGES; i++) {
@@ -57,9 +61,13 @@ int table_close(Table *table) {
 void* row_slot(Table* table, uint32_t row_num) {
     //which page does it belong to
     uint32_t page_num = (int)row_num / ROWS_PER_PAGE;
+
+    // check overflow
+    if (page_num >= TABLE_MAX_PAGES) return NULL;
+
     void* page;
     if (table->pages[page_num] == NULL) {
-        page = malloc(PAGE_SIZE);
+        page = calloc(1, PAGE_SIZE);
         if (page == NULL) return NULL;
         //check if the db file has data
         if (fseek(table->file, ROWS_OFFSET + (page_num * PAGE_SIZE), SEEK_SET) == 0) {

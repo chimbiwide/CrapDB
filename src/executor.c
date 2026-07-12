@@ -5,9 +5,9 @@
 
 #include "../include/parser.h"
 #include "../include/color.h"
+#include "../include/error.h"
 
 void execute_command(Command *cmd, Table *table, const char *input) {
-    
     switch(cmd->type){
         case CMD_INSERT: {
             uint32_t id;
@@ -19,24 +19,37 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                 row.deleted = 0;
                 uint8_t duplicate = 0;
 
+                // check for duplicates
                 for (uint32_t i = 0; i < table->num_rows; i++) {
                     Row current;
-                    deserialize_row(row_slot(table, i), &current);
+                    void* target_row = row_slot(table, i);
+                    // check if overflow
+                    if (target_row == NULL) {
+                        printf("%sMaximum row number exceeded, open a new db%s\n", RED, RESET);
+                        break;
+                    }
+                    deserialize_row(target_row, &current);
                     if (row.id == current.id && !current.deleted) {
                         duplicate = 1;
                         break;
                     }
                 }
                 if (duplicate) printf("%sDuplicate Values%s\n", RED, RESET);
+                //insert
                 else {
+                    void* target_row = row_slot(table, table->num_rows);
+                    if (target_row == NULL) {
+                        printf("%sMaximum row number exceeded, open a new db%s\n", RED, RESET);
+                        break;
+                    }
                     strncpy(row.username, username, COLUMN_USRNAME_SIZE+1);
                     strncpy(row.bio, bio, COLUMN_BIO_SIZE+1);
-                    serialize_row(&row, row_slot(table, table->num_rows));
+                    serialize_row(&row, target_row);
                     table->num_rows++;
                     printf("%sINSERTED%s\n", GRN, RESET);
                 }
             }
-            else printf("%sUsage: INSERT <id: uint_32> <username: String> <bio: String>%s\n", RED, RESET);
+            else print_inc_usage(SRC_INSERT);
             break;
         }
         case CMD_SELECT: {
@@ -46,6 +59,10 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                 valid = 1;
                 for (uint32_t i = 0; i < table->num_rows; i++) {
                     Row output;
+                    void* target_row = row_slot(table, i);
+                    if (target_row == NULL) {
+
+                    }
                     deserialize_row(row_slot(table, i), &output);
                     if (output.deleted || output.id != id) continue;
                     print_row(&output);
@@ -61,12 +78,12 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                 }
             }
             if (valid) break;
-            else printf("%sUsage: SELECT OR SELECT WHERE ID = <id: uint_32>%s\n", RED, RESET);
+            else print_inc_usage(SRC_SELECT);
             break;
         }
         case CMD_DELETE: {
             uint8_t found = 0;
-            uint32_t id;
+            uint32_t id = 0;
             if (sscanf(input, "DELETE WHERE ID = %d", &id) == 1) {
                 for (uint32_t i = 0; i < table->num_rows; i++) {
                     Row current;
@@ -86,7 +103,7 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                 if (found) printf("%sDeleted%s\n", GRN, RESET);
                 else printf("Row not found\n");
             }
-            else printf("%sRow with ID: '%d' not found%s\n", RED, id, RESET);
+            else print_inc_usage(SRC_DELETE);
             break;
         }
         case CMD_UPDATE: {
@@ -109,7 +126,7 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                 }
                 if (!found) printf("%sRow with ID = %u not found%s\n", RED, target_id, RESET);
             }
-            else printf("%sUsage: UPDATE WHERE ID = <uint32> SET username = <string> bio = <string>%s\n", RED, RESET);
+            else print_inc_usage(SRC_UPDATE);
             break;
         }
         case CMD_COUNT: {
@@ -125,7 +142,7 @@ void execute_command(Command *cmd, Table *table, const char *input) {
                 printf("%sTotal Rows: %u %s\n", GRN, count, RESET);
                 break;
             }
-            else printf("%sUsage: COUNT%s\n", RED, RESET);
+            else print_inc_usage(SRC_COUNT);
             break;
         }
         default:
