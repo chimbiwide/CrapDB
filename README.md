@@ -37,4 +37,4 @@ With 2 Meta commands:
 
 Requirements: **gcc**/**clang** **make**
 
-Tested to compile on Ubuntu and MacOS.
+Tested to compile on Ubuntu, Fedora and MacOS.
