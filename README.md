@@ -35,6 +35,6 @@ With 2 Meta commands:
 
 ### Compiling
 
-Requirements: **gcc**/**clang** **make**
+Requirements: **gcc**/**clang**, **make**
 
 Tested to compile on Ubuntu, Fedora and MacOS.
